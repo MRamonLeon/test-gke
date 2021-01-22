@@ -1,12 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jenkins-deployment
+  name: jenkins
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: jenkins
-  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -16,10 +16,13 @@ spec:
       - name: jenkins
         image: jenkins/jenkins:2.275-alpine
         ports:
-        - containerPort: 8080
-volumeMounts:
-          - name: jenkins-home
-            mountPath: /var/jenkins_home
+          - name: http-port
+            containerPort: 8080
+          - name: jnlp-port
+            containerPort: 50000
+        volumeMounts:
+          - name: jenkins-vol
+            mountPath: /var/jenkins_vol
       volumes:
-        - name: jenkins-home
-          emptyDir: {}
+        - name: jenkins-vol
+          emptyDir: {}          
